@@ -1,10 +1,11 @@
 # Telegram Bot for Hyd TW group.
-    * Keeps a record of vehicles and owners
-        * Supported methods 
-            ```
-            /vehicle_owner - Get the vehicle owner  
-            /add_vehicle_owner - Add the vehicle owner 
-            ```
+
+* Keeps a record of vehicles and owners
+   * Supported methods 
+   ```
+   /vehicle_owner - Get the vehicle owner  
+   /add_vehicle_owner - Add the vehicle owner 
+   ```
             
 
 
