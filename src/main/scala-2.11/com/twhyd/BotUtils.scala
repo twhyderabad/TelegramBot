@@ -8,6 +8,9 @@ object BotUtils {
   val regex_registration_number = "^[A-Za-z]{2}( |-)?[0-9]{2}( |-)?[A-Za-z]?( |-)?[A-Za-z]{2}( |-)?[0-9]{1,4}".r
 
   val regex_command = "^\\/\\w+".r
+  val regex_mention = "@\\w+".r
+
+  def sanitizeInput(input: String) = input.replaceFirst(regex_mention.regex, "")
 
   //  val regex_command = "(^\\/\\w+) (.*)".r
   /*  val u = regex_registration_number.findFirstIn("MH14-FE-5151")

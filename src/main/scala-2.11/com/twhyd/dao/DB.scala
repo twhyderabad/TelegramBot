@@ -84,7 +84,7 @@ object DB {
   def getVehicleOwner(registrationKey: String): Future[String] = {
     val getAction = (for {v <- vehicles if v.registration === registrationKey} yield v) result
     val getFuture = db.run(getAction)
-    getFuture map { rs => s"Owner=>${rs.head.owner}" } recover { case _ => "Owner not registered." }
+    getFuture map { rs => s"Owner=>${rs.head.owner}" } recover { case _ => s"Owner not registered for '$registrationKey'." }
   }
 
   /* Not working on SQLite */

@@ -21,7 +21,7 @@ class TelegramBotHandler extends TelegramLongPollingBot {
       val message = update.getMessage
       //check if the message has text. it could also contain for example a location ( message.hasLocation() )
       if (message.hasText) {
-        val input: String = message.getText
+        val input: String = BotUtils.sanitizeInput(message.getText)
         BotLogger.info(LOGTAG, input)
 
         //create an object that contains the information to send back the message
