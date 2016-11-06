@@ -8,20 +8,16 @@ import com.twhyd.handler.TelegramBotHandler
 import org.telegram.telegrambots.logging.{BotLogger, BotsFileHandler}
 import org.telegram.telegrambots.{TelegramApiException, TelegramBotsApi}
 
-class Main {
-
-}
-
 object Main {
   val LOGTAG = "MAIN"
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]) {
     initializeLogging
     DB.setupDB("sqllite")
     startTelegramBot
   }
 
-  private def initializeLogging = {
+  private def initializeLogging {
     BotLogger.setLevel(Level.ALL)
     BotLogger.registerLogger(new ConsoleHandler)
     try
@@ -33,7 +29,7 @@ object Main {
     }
   }
 
-  private def startTelegramBot = {
+  private def startTelegramBot {
     val telegramBotsApi: TelegramBotsApi = new TelegramBotsApi
       val start = System.currentTimeMillis()
     try {

@@ -49,16 +49,17 @@ class DBIntTest extends AsyncFunSuite with BeforeAndAfterAll {
     updateFuture map { result => assert(result === gold) }
   }
 
-  test("should be able to get owner for registered user") {
+  test("should return owner for registered user") {
     val regKey = "MH14FE3333"
     val vehicle = Vehicle("MH14FE3333", "John Doe Three")
     val addFuture = DB.addVehicleOwner(vehicle)
+    val gold = s"Owner=>${vehicle.owner}"
     exec(addFuture)
-    DB.getVehicleOwner(regKey) map {owner => assert(owner === vehicle.owner) }
+    DB.getVehicleOwner(regKey) map {owner => assert(owner === gold) }
   }
 
   test("should return proper msg for unregistered user") {
     val regKey = "MH14FE9999"
-    DB.getVehicleOwner(regKey) map {owner => assert(owner === "Owner not registered.") }
+    DB.getVehicleOwner(regKey) map {owner => assert(owner === s"Owner not registered for '$regKey'.") }
   }
 }

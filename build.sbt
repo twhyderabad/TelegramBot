@@ -1,26 +1,35 @@
 name := "TwHydTelegramBot"
 
-version := "1.0"
+addCommandAlias("mg", "migrations/run")
 
-scalaVersion := "2.11.8"
+lazy val commonSettings = Seq(
+  version := "1.0",
+  scalaVersion := "2.11.8",
+  resolvers += "jitpack.io" at "https://jitpack.io" // For TelegramBot Api jar.
+)
 
-resolvers += "jitpack.io" at "https://jitpack.io"
+lazy val slickVersion = "3.1.1"
+lazy val forkliftVersion = "0.2.3"
 
-libraryDependencies ++= Seq(
-  // TelegramBotApi
-  "com.github.rubenlagus" %% "TelegramBots" % "v2.3.5",
-  // config properties library
-  "com.typesafe" % "config" % "1.3.1",
+
+lazy val commonDependencies = Seq(
+  // HikariCP - used by Slick
+    "com.typesafe.slick" %% "slick-hikaricp" % slickVersion
+  , "com.zaxxer" % "HikariCP" % "2.5.1"
+
   // SQLlite
-  "org.xerial" % "sqlite-jdbc" % "3.8.11.2",
-  //ARM
-  "com.jsuereth" %% "scala-arm" % "1.4",
-  //Slick
-  "com.typesafe.slick" %% "slick" % "3.1.1",
-  // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
-  "com.typesafe.slick" %% "slick-hikaricp" % "3.1.0",
-  "com.zaxxer" % "HikariCP" % "2.5.1"
+  , "org.xerial" % "sqlite-jdbc" % "3.8.11.2"
+)
 
+
+lazy val appDependencies = Seq(
+  // TelegramBotApi
+    "com.github.rubenlagus" %% "TelegramBots" % "v2.3.5"
+  // config properties library
+  , "com.typesafe" % "config" % "1.3.1"
+
+  //Slick
+  , "com.typesafe.slick" %% "slick" % slickVersion
 
   // Scalatest
   , "org.scalactic" %% "scalactic" % "3.0.0"
@@ -28,6 +37,26 @@ libraryDependencies ++= Seq(
   // Mock
   , "org.scalamock" %% "scalamock-scalatest-support" % "3.2.2" % "test"
 )
+
+lazy val migrationDependencies = Seq(
+  "com.liyaos" %% "scala-forklift-slick" % forkliftVersion
+  , "io.github.nafg" %% "slick-migration-api" % "0.3.0"
+)
+
+lazy val app = project.in(file("app")).dependsOn(generatedCode).settings(commonSettings: _*)
+  .settings {
+    libraryDependencies ++= commonDependencies ++ appDependencies
+  }
+
+lazy val migrations = project.in(file("migrations")).settings(
+  commonSettings: _*).settings {
+  libraryDependencies ++=commonDependencies ++ migrationDependencies
+}
+
+lazy val generatedCode = Project("generate_code",
+  file("generated_code")).settings(commonSettings: _*).settings {
+  libraryDependencies ++= appDependencies
+}
 
 enablePlugins(sbtdocker.DockerPlugin, JavaAppPackaging)
 
@@ -41,5 +70,3 @@ dockerfile in docker := {
     copy(appDir, targetDir)
   }
 }
-
-mainClass in Compile := Some("com.twhyd.Main")
